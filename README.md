@@ -1,5 +1,14 @@
 <p align="center">
-  <img src="assets/logo.png" alt="brain-first" width="500"/>
+  <img src="assets/logo.png" alt="brain-first" width="250"/>
+</p>
+
+<p align="center">
+  <a href="https://github.com/AlniyatYang/brain-first/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT"/></a>
+  <a href="https://agentskills.io/specification"><img src="https://img.shields.io/badge/Agent%20Skills-compatible-blue.svg" alt="Agent Skills Compatible"/></a>
+  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Claude%20Code-supported-orange.svg" alt="Claude Code"/></a>
+  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Codex-supported-orange.svg" alt="Codex"/></a>
+  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/OpenCode-supported-orange.svg" alt="OpenCode"/></a>
+  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Kimi%20Code-supported-orange.svg" alt="Kimi Code"/></a>
 </p>
 
 
