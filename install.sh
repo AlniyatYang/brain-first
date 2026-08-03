@@ -30,6 +30,8 @@ case "$MODE" in
     installed=0
     for dir in "${TARGETS[@]}"; do
       [ -d "$dir" ] || continue
+      # 先删后拷，保证与源完全一致（cp -r 合并复制不会删除源中已移除的文件）
+      rm -rf "$dir/$SKILL_NAME"
       cp -r "$SKILL_SRC" "$dir/"
       echo "已安装 -> $dir/$SKILL_NAME"
       installed=$((installed + 1))
