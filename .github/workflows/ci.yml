@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ShellCheck
+        run: shellcheck install.sh
+
+      - name: Validate SKILL.md
+        run: |
+          python3 -m pip install --quiet pyyaml
+          python3 scripts/validate_skill.py
+
+      - name: Smoke test install.sh
+        run: |
+          set -euo pipefail
+          export HOME="$(mktemp -d)"
+          mkdir -p "$HOME/.claude" "$HOME/.codex" "$HOME/.config/opencode" "$HOME/.agents/skills/brain-first"
+
+          ./install.sh
+          diff -r skills/brain-first "$HOME/.claude/skills/brain-first"
+          diff -r skills/brain-first "$HOME/.codex/skills/brain-first"
+          # OpenCode 读 ~/.claude/skills，不应重复安装；旧版 ~/.agents 副本应被清理
+          test ! -e "$HOME/.config/opencode/skills/brain-first"
+          test ! -e "$HOME/.agents/skills/brain-first"
+
+          ./install.sh   # 幂等
+          ./install.sh --uninstall
+          test ! -e "$HOME/.claude/skills/brain-first"
+          test ! -e "$HOME/.codex/skills/brain-first"
+
+          # 没有任何 agent 时应失败
+          export HOME="$(mktemp -d)"
+          if ./install.sh; then echo "expected failure"; exit 1; fi

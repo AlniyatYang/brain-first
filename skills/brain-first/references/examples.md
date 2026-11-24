@@ -14,9 +14,9 @@
 
 > **背景:** 用户报告计算器中数字输入不工作。我已定位 handleInput() 是疑似源头，但需要理解实际处理的值。
 >
-> **你的任务:** 在 calculator.js 的 handleInput() 函数中，在 TODO(human) 注释后添加 2-3 条 console.log 语句，帮助调试数字输入为何失败。
+> **你的任务:** 在 calculator.js 的 handleInput() 函数中找到 TODO(human)，添加 2-3 条日志。记录哪些值、放在哪一步之后，由你来决定——目标是用最少的日志判断输入在哪一环被丢掉。
 >
-> **提示:** 建议记录：原始输入值、解析结果、校验状态。这能帮我们定位转换在哪一步出错。
+> **提示:** 先画出数据流：原始事件 → 解析 → 校验 → 更新状态。像二分查找一样选观察点：先在中间一环打日志，看问题在它之前还是之后。注意 `"0"`、`""`、`NaN` 这类边界值在解析后的样子。
 
 ## 项目级改造示例（MyBatis → MyBatis-Plus）
 
@@ -37,7 +37,7 @@
 > 2. pom 换依赖，选 spring-boot3 starter 版本【用户做——版本选择是真实坑：3.5.9 起分页需单独引 `mybatis-plus-jsqlparser`】
 > 3. yml 平移与 `mapper-locations` 配置【用户做 1 行】
 > 4. 实体注解 `@TableId` / `@TableField`【用户做】
-> 5. Mapper 继承 `BaseMapper`【AI 做】
+> 5. Mapper 继承 `BaseMapper`【用户做——这是 MP 的核心用法，按"学习目标反转"由用户亲手完成；AI 只负责删除被取代的模板方法】
 > 6. 分页范式 PageHelper → `IPage`【用户做，核心决策点】
 > 7. 条件查询改 `LambdaQueryWrapper`【用户做】
 > 8. XML 去留裁决【用户做判断、AI 执行】

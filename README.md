@@ -4,6 +4,8 @@
 
 ## Brain-First：AI 写常规代码，你写关键代码
 
+<p align="center">中文 | <a href="README.en.md">English</a></p>
+
 <p align="center">
   <a href="https://github.com/AlniyatYang/brain-first/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT"/></a>
   <a href="https://agentskills.io/specification"><img src="https://img.shields.io/badge/Agent%20Skills-compatible-blue.svg" alt="Agent Skills Compatible"/></a>
@@ -18,7 +20,7 @@
 
 ## 引子：一个关于"脑"的故事
 
-话说曾经里有一位程序员，十年不用 AI 补全，所有代码手写，被全组当"活化石"围观：同事用 AI
+话说曾经有一位程序员，十年不用 AI 补全，所有代码手写，被全组当"活化石"围观：同事用 AI
 一天三个需求，他三天一个；同事笑他是"人形编译器"、"用算盘嘲笑计算器"。他工位上贴着一张
 手写的便签，师傅留给他的："每行代码都要过自己脑子。"
 
@@ -43,8 +45,10 @@ brain-first 就是把这句教训变成一套可执行的协议：AI 做常规�
   多方案的业务逻辑、关键算法、接口定义等关键实现，邀请你亲手完成（每次 2-10 行）
 - **TODO(human) 契约**：发出请求前，AI 先在你的代码库写入 `TODO(human)` 占位，且全库
   唯一——你始终知道自己在补哪一块，AI 不会同时抛出多个待办点
-- **教学要点**：你完成实现后，AI 给出针对本次代码的 2-3 条讲解（解决什么问题、关键取舍、
-  可推广场景）
+- **检查你的代码**：你写完后，AI 先读代码、能跑测试就跑，有问题只给提示让你自己改，
+  通过后才清掉 `TODO(human)` 标记
+- **教学要点**：每步验收通过后讲 1 条，全部完成后总结 2-3 条（解决什么问题、关键取舍、
+  可推广场景），不在每轮刷屏
 - **可随时退出**：说"恢复正常模式"即停止练习模式，按普通模式继续
 - **开场协议**：学习/改造类任务先输出概念地图 + 步骤总览（标注每步谁做），你确认后才动手——杜绝 AI 一口气全写完
 - **节奏与验收**：一回合只推进一步，每步结束用一个问题验收你的理解，答不上就当场讲透
@@ -57,8 +61,9 @@ brain-first 就是把这句教训变成一套可执行的协议：AI 做常规�
 2. AI 按总览逐步骤实现，常规部分自己写，遇到关键决策点（或你声明要学的操作）先写入 `TODO(human)` 占位
 3. AI 用 **背景 / 你的任务 / 提示** 三段式请求你亲手实现 2-10 行关键代码
 4. 发完请求后 AI 静默等待，不代劳、不继续输出
-5. 每个步骤结束，AI 用一个验收问题确认你能讲清刚发生的改动，答不上就当场讲透
-6. 全部步骤完成后，AI 讲一条教学要点，把你的代码与更广的模式联系起来
+5. 你写完后，AI 读代码并尽量编译/测试验证；有问题给提示让你改，通过后清掉 `TODO(human)`
+6. 每个步骤结束，AI 用一个验收问题确认你能讲清刚发生的改动，答对给 1 条教学要点，答不上就当场讲透
+7. 全部步骤完成后，AI 总结 2-3 条教学要点，把你的代码与更广的模式联系起来
 
 输出格式使用 CommonMark 通用元素（标题、引用块、粗体），在主流 agent 中渲染一致，
 无工具定制。
@@ -77,7 +82,10 @@ brain-first 就是把这句教训变成一套可执行的协议：AI 做常规�
 | Claude Code | `~/.claude/skills/brain-first/` |
 | Kimi Code | `~/.kimi-code/skills/brain-first/` |
 | Codex | `~/.codex/skills/brain-first/` |
-| OpenCode | `~/.config/opencode/skills/brain-first/`（也会读 `~/.claude/skills/` 与 `~/.agents/skills/`） |
+| OpenCode | `~/.config/opencode/skills/brain-first/`（也会读 `~/.claude/skills/`，已装 Claude Code 时无需再装） |
+
+> 每个 agent 只需要装一份。Codex、Kimi Code、OpenCode 还会读共享目录 `~/.agents/skills/`，
+> 同一个 skill 在多个目录各放一份会被重复加载。
 
 兼容 [Agent Skills 规范](https://agentskills.io/specification)，任何支持 `SKILL.md`
 的 agent 均可使用。
@@ -93,26 +101,33 @@ brain-first 就是把这句教训变成一套可执行的协议：AI 做常规�
 ### 方式一：安装脚本（推荐）
 
 ```bash
-git clone <repo-url> && cd brain-first
-./install.sh                # 安装到所有已存在的 agent 目录（幂等）
+git clone https://github.com/AlniyatYang/brain-first.git && cd brain-first
+./install.sh                # 检测已安装的 agent，自动创建 skills 目录并安装（幂等）
 ./install.sh --uninstall    # 卸载
 ```
+
+脚本以 `~/.claude`、`~/.codex`、`~/.kimi-code`、`~/.config/opencode` 是否存在来判断装了哪些
+agent，每个 agent 只装一份；旧版本留在 `~/.agents/skills/` 的副本会被自动清理。
 
 Windows 用户用 Git Bash 运行（PowerShell：`bash install.sh`）。
 
 ### 方式二：手动复制
 
+按你用的 agent 选一行即可（不要全部执行，否则会重复加载）：
+
 ```bash
-cp -r skills/brain-first ~/.claude/skills/
-cp -r skills/brain-first ~/.kimi-code/skills/
-cp -r skills/brain-first ~/.codex/skills/
-cp -r skills/brain-first ~/.agents/skills/    # Codex / OpenCode 也读这里
+mkdir -p ~/.claude/skills && cp -r skills/brain-first ~/.claude/skills/
+mkdir -p ~/.kimi-code/skills && cp -r skills/brain-first ~/.kimi-code/skills/
+mkdir -p ~/.codex/skills && cp -r skills/brain-first ~/.codex/skills/
+mkdir -p ~/.config/opencode/skills && cp -r skills/brain-first ~/.config/opencode/skills/
 ```
 
 ### 方式三：社区 CLI
 
+使用 [skills CLI](https://github.com/vercel-labs/skills)，会自动检测已安装的 agent：
+
 ```bash
-npx skills install <repo-url>/skills/brain-first
+npx skills add AlniyatYang/brain-first -g
 ```
 
 安装后**新开会话**生效。
@@ -121,21 +136,33 @@ npx skills install <repo-url>/skills/brain-first
 
 ```
 brain-first/
-├── README.md
+├── README.md                     # 中文说明
+├── README.en.md                  # English
+├── CHANGELOG.md                  # 版本记录
 ├── LICENSE                       # MIT
 ├── install.sh                    # 多 agent 一键安装/卸载
+├── assets/
+│   └── logo.png
+├── scripts/
+│   └── validate_skill.py         # 校验 SKILL.md frontmatter 与规范约束
+├── .github/workflows/ci.yml      # CI：shellcheck + skill 校验 + 安装脚本冒烟测试
 └── skills/
     └── brain-first/
         ├── SKILL.md              # 核心指令（Agent Skills 规范，中文）
         └── references/
-            └── examples.md       # 完整请求示例（局部函数/调试）
+            └── examples.md       # 完整请求示例（局部函数/调试/项目级改造）
 ```
 
 ## 开发
 
-- `name` 必须与文件夹名一致；修改行为后递增 `metadata.version`
+- `name` 必须与文件夹名一致；修改行为后递增 `metadata.version`，并在 `CHANGELOG.md` 记录
 - SKILL.md 保持精简（<500 行 / 5k tokens），细节进 `references/`
-- 行为变更请同步更新本 README
+- 行为变更请同步更新 `README.md` 与 `README.en.md`
+- 提交前本地校验：
+
+```bash
+python3 scripts/validate_skill.py && shellcheck install.sh
+```
 
 ## License
 
