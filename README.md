@@ -9,10 +9,10 @@
 <p align="center">
   <a href="https://github.com/AlniyatYang/brain-first/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT"/></a>
   <a href="https://agentskills.io/specification"><img src="https://img.shields.io/badge/Agent%20Skills-compatible-blue.svg" alt="Agent Skills Compatible"/></a>
-  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Claude%20Code-supported-orange.svg" alt="Claude Code"/></a>
   <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Codex-supported-orange.svg" alt="Codex"/></a>
-  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/OpenCode-supported-orange.svg" alt="OpenCode"/></a>
   <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Kimi%20Code-supported-orange.svg" alt="Kimi Code"/></a>
+  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/OpenCode-supported-orange.svg" alt="OpenCode"/></a>
+  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Claude%20Code-supported-orange.svg" alt="Claude Code"/></a>
 </p>
 
 
@@ -39,10 +39,26 @@ for 循环、二分查找都要靠 AI 代写。不是他们不聪明，是"搜�
 brain-first 就是把这句教训变成一套可执行的协议：AI 做常规实现（搭路），关键决策和核心
 算法留给你亲手写（练腿），写完讲给你听（过脑子）。
 
+## 为什么做这个
+
+Claude Code 内置了 Learning 输出风格，能让 AI 把关键代码留给你写；但 **Codex、Kimi Code、
+OpenCode 等 coding agent 没有这个功能**。brain-first 把这套做法做成了通用的
+[Agent Skill](https://agentskills.io/specification)，主要就是给这些 agent 用的，并在原有基础上
+补上了项目优先模式、难度档位、分级提示和弱项本。
+
 ## 功能
 
+- **两种模式**：
+  - **项目优先**（默认）：适合"有想法、但 vibe coding 写多了手生了"的你。AI 照常把东西做出来，
+    每个功能只留 1-2 处最值得手写的关键代码给你，不拖慢进度
+  - **练习优先**：跟学/改造某项技术时，先给概念地图和步骤总览，再一步步来。说"认真练"或"先做出来"随时切换
 - **关键代码让渡**：AI 完成常规实现（脚手架、接线、重复代码、外围配置）；设计决策、存在
-  多方案的业务逻辑、关键算法、接口定义等关键实现，邀请你亲手完成（每次 2-10 行）
+  多方案的业务逻辑、关键算法、接口定义等关键实现，邀请你亲手完成
+- **难度档位**：填空档（骨架写好，你补 2-3 行）/ 标准档（2-10 行）/ 挑战档（空函数只给签名）。
+  手生就从填空档起步，说"简单点 / 难一点"随时调整
+- **分级提示**：卡住时先给方向，再给关键 API / 伪代码，再给挖空的半成品，最后才给答案，
+  帮你找回"差一点就想起来"的手感
+- **弱项本**（需你同意）：把反复卡住的点记到 `~/.brain-first/weak-spots.md`，以后遇到同类代码优先让你练
 - **TODO(human) 契约**：发出请求前，AI 先在你的代码库写入 `TODO(human)` 占位，且全库
   唯一——你始终知道自己在补哪一块，AI 不会同时抛出多个待办点
 - **检查你的代码**：你写完后，AI 先读代码、能跑测试就跑，有问题只给提示让你自己改，
@@ -50,20 +66,25 @@ brain-first 就是把这句教训变成一套可执行的协议：AI 做常规�
 - **教学要点**：每步验收通过后讲 1 条，全部完成后总结 2-3 条（解决什么问题、关键取舍、
   可推广场景），不在每轮刷屏
 - **可随时退出**：说"恢复正常模式"即停止练习模式，按普通模式继续
-- **开场协议**：学习/改造类任务先输出概念地图 + 步骤总览（标注每步谁做），你确认后才动手——杜绝 AI 一口气全写完
-- **节奏与验收**：一回合只推进一步，每步结束用一个问题验收你的理解，答不上就当场讲透
+- **开场协议**（练习优先）：先输出概念地图 + 步骤总览（标注每步谁做），你确认后才动手——杜绝 AI 一口气全写完
+- **节奏与验收**：练习优先一回合只推进一步；每步（项目优先是每个功能）结束用一个问题验收你的理解
 
 ## 工作机制
 
-一次典型的 brain-first 会话：
+**项目优先**（"帮我做个记账小工具，手有点生"）：
 
-1. 学习/改造类任务先走开场协议：概念地图 + 步骤总览，你确认后才开始
-2. AI 按总览逐步骤实现，常规部分自己写，遇到关键决策点（或你声明要学的操作）先写入 `TODO(human)` 占位
-3. AI 用 **背景 / 你的任务 / 提示** 三段式请求你亲手实现 2-10 行关键代码
-4. 发完请求后 AI 静默等待，不代劳、不继续输出
-5. 你写完后，AI 读代码并尽量编译/测试验证；有问题给提示让你改，通过后清掉 `TODO(human)`
-6. 每个步骤结束，AI 用一个验收问题确认你能讲清刚发生的改动，答对给 1 条教学要点，答不上就当场讲透
-7. 全部步骤完成后，AI 总结 2-3 条教学要点，把你的代码与更广的模式联系起来
+1. AI 说明当前模式，照常把整个功能的常规部分写完
+2. 挑 1-2 处最值得手写的关键点（优先弱项本里的主题），按当前档位写好骨架和 `TODO(human)` 占位
+3. AI 用 **背景 / 你的任务 / 提示** 三段式请你补上，然后静默等待
+4. 你写完后，AI 读代码并尽量编译/测试验证；有问题按分级提示帮你改，通过后清掉 `TODO(human)`
+5. 功能结束时一个验收问题（可以回复"跳过"），答对给 1 条教学要点
+
+**练习优先**（"我想学把项目改造成 MyBatis-Plus"）：
+
+1. 先走开场协议：概念地图 + 步骤总览，你确认后才开始
+2. AI 按总览逐步骤实现，常规部分自己写，关键决策点和你声明要学的操作留 `TODO(human)`
+3. 每个步骤结束用一个验收问题确认你能讲清刚发生的改动，答不上就当场讲透，不进入下一步
+4. 全部步骤完成后，AI 总结 2-3 条教学要点，把你的代码与更广的模式联系起来
 
 输出格式使用 CommonMark 通用元素（标题、引用块、粗体），在主流 agent 中渲染一致，
 无工具定制。
@@ -72,17 +93,17 @@ brain-first 就是把这句教训变成一套可执行的协议：AI 做常规�
 
 - 跟学项目改造：如把 MyBatis 改造成 MyBatis-Plus，AI 铺路、你改关键部分
 - 面试准备：练习"关闭 AI 手写代码"环节的常见题目
-- 恢复动手能力：长期使用 AI 生成代码后，重新建立手写代码的自信
+- 恢复动手能力：vibe coding 写多了、手生了，边做自己的项目边把手艺捡回来
 - 学习新框架：AI 搭好骨架，你亲手补核心业务逻辑
 
 ## 支持的 agent
 
-| Agent | 全局目录 |
-|---|---|
-| Claude Code | `~/.claude/skills/brain-first/` |
-| Kimi Code | `~/.kimi-code/skills/brain-first/` |
-| Codex | `~/.codex/skills/brain-first/` |
-| OpenCode | `~/.config/opencode/skills/brain-first/`（也会读 `~/.claude/skills/`，已装 Claude Code 时无需再装） |
+| Agent | 全局目录 | 手动调用 |
+|---|---|---|
+| **Codex** | `~/.codex/skills/brain-first/` | 输入 `$brain-first`，或 `/skills` 选择 |
+| Kimi Code | `~/.kimi-code/skills/brain-first/` | `/skill:brain-first` |
+| OpenCode | `~/.config/opencode/skills/brain-first/`（也会读 `~/.claude/skills/`，已装 Claude Code 时无需再装） | 直接说"用 brain-first skill" |
+| Claude Code | `~/.claude/skills/brain-first/` | `/brain-first` |
 
 > 每个 agent 只需要装一份。Codex、Kimi Code、OpenCode 还会读共享目录 `~/.agents/skills/`，
 > 同一个 skill 在多个目录各放一份会被重复加载。
@@ -92,9 +113,20 @@ brain-first 就是把这句教训变成一套可执行的协议：AI 做常规�
 
 ## 触发方式
 
-- **自动触发**：说"学习模式 / 边写边学 / 自己动手写 / hands-on practice"等，由模型根据
+- **自动触发**：说"学习模式 / 边写边学 / 自己动手写 / 别全替我写 / 手生了 / hands-on practice"等，由模型根据
   `description` 中的触发词自动加载
-- **手动触发**：新开会话后输入 `/brain-first`
+- **手动触发**：新开会话后按上表的"手动调用"方式加载（Codex 是 `$brain-first`）
+
+### 长期开启
+
+想在某个项目里一直用，在项目根目录的 `AGENTS.md`（Codex、Kimi Code、OpenCode 都会读；
+Claude Code 用 `CLAUDE.md`）加一行：
+
+```markdown
+写代码时默认使用 brain-first skill（项目优先模式）。
+```
+
+Codex 想对所有项目生效，写到 `~/.codex/AGENTS.md`。
 
 ## 安装
 
@@ -163,6 +195,15 @@ brain-first/
 ```bash
 python3 scripts/validate_skill.py && shellcheck install.sh
 ```
+
+## 致谢与说明
+
+brain-first 参考了 Claude Code 内置的 Learning（教学）输出风格：`TODO(human)` 占位和
+"背景 / 你的任务 / 提示"三段式请求都源自那里。在此基础上，brain-first 做成了跨 agent 通用的
+Agent Skill，并加上了开场协议、两种模式、难度档位、分级提示、代码检查、验收问题和弱项本。
+
+brain-first 也能在 Claude Code 里用。这时请保持默认输出风格，**不要同时开启 Learning 或
+Explanatory 输出风格**，否则会出现两套教学要点和动手请求。
 
 ## License
 

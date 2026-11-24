@@ -2,6 +2,20 @@
 
 版本号对应 `skills/brain-first/SKILL.md` 中的 `metadata.version`。
 
+## [1.3.0] - 2026-11-24
+
+面向"有想法、但 vibe coding 写多了手生了"的用户。
+
+- 新增两种模式：项目优先（默认，照常把功能做出来，每个功能只留 1-2 处关键代码给用户）与练习优先（原有的开场协议 + 逐步推进）；节奏约束只作用于练习优先
+- 新增难度档位：填空档 / 标准档 / 挑战档，手生时从填空档起步，"简单点 / 难一点"随时调整，并按表现自动降档或提议升档
+- "卡住兜底"改为四级分级提示：方向 → 关键 API / 伪代码 → 挖空半成品 → 答案（由用户自己写入）
+- 新增弱项本 `~/.brain-first/weak-spots.md`（需用户同意）：记录反复卡住的主题，之后优先练
+- description 补充触发词："别全替我写"、"手生了"、"vibe coding 写多了"、"忘了怎么写代码"
+- 新增项目优先与分级提示示例；新增红旗"用户刚说卡住就直接给答案"
+- README 注明参考了 Claude Code 的 Learning 输出风格，并提示不要与其同时开启
+- 明确定位为主要服务 Codex、Kimi Code、OpenCode 等没有内置 Learning 风格的 agent：README 以 Codex 为先，补充各 agent 的手动调用方式（Codex `$brain-first`、Kimi Code `/skill:brain-first`）与通过 `AGENTS.md` 长期开启的方法
+- 新增"运行环境适配"：非交互运行（如 `codex exec`、CI）不启用；沙箱拦截验证命令时请用户自己运行；计划/待办集成不再只写 TodoList
+
 ## [1.2.0] - 2026-11-24
 
 ### Skill 行为

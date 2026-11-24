@@ -9,10 +9,10 @@
 <p align="center">
   <a href="https://github.com/AlniyatYang/brain-first/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT"/></a>
   <a href="https://agentskills.io/specification"><img src="https://img.shields.io/badge/Agent%20Skills-compatible-blue.svg" alt="Agent Skills Compatible"/></a>
-  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Claude%20Code-supported-orange.svg" alt="Claude Code"/></a>
   <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Codex-supported-orange.svg" alt="Codex"/></a>
-  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/OpenCode-supported-orange.svg" alt="OpenCode"/></a>
   <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Kimi%20Code-supported-orange.svg" alt="Kimi Code"/></a>
+  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/OpenCode-supported-orange.svg" alt="OpenCode"/></a>
+  <a href="https://github.com/AlniyatYang/brain-first"><img src="https://img.shields.io/badge/Claude%20Code-supported-orange.svg" alt="Claude Code"/></a>
 </p>
 
 > **Every programmer on Earth got 100× worse. I didn't.**
@@ -44,34 +44,58 @@ brain-first turns that lesson into an executable protocol: AI does the routine w
 road), you hand-write key decisions and core algorithms (train the legs), and then you explain
 what you wrote (it goes through your brain).
 
+## Why this exists
+
+Claude Code has a built-in Learning output style that leaves key code for you to write, but
+**Codex, Kimi Code, OpenCode and other coding agents don't**. brain-first packages that approach
+as a portable [Agent Skill](https://agentskills.io/specification), mainly for those agents, and
+adds a project-first mode, difficulty levels, graded hints and a weak-spot log on top.
+
 ## Features
 
+- **Two modes**:
+  - **Project-first** (default): for people who have ideas but got rusty from too much vibe
+    coding. AI builds the thing as usual and leaves only 1-2 key spots per feature for you to
+    write, so you don't lose momentum
+  - **Practice-first**: when learning or migrating to a technology, you get a concept map and a
+    step overview, then go step by step. Say "practice properly" / "just build it" to switch
 - **Hand over the key code**: AI handles routine work (scaffolding, wiring, boilerplate,
   peripheral config); design decisions, business logic with several valid approaches, key
-  algorithms and interface definitions are left for you to write (2-10 lines at a time)
+  algorithms and interface definitions are left for you to write
+- **Difficulty levels**: fill-in (skeleton written, you add 2-3 lines) / standard (2-10 lines) /
+  challenge (empty function, signature only). Rusty? Start at fill-in; say "easier" / "harder" any time
+- **Graded hints**: when stuck you get a direction, then the key API or pseudocode, then a
+  half-finished version with blanks, and only then the answer
+- **Weak-spot log** (opt-in): spots you keep getting stuck on go to `~/.brain-first/weak-spots.md`,
+  and similar code later is offered to you first
 - **The `TODO(human)` contract**: before asking, AI writes a `TODO(human)` placeholder in your
   codebase, and only one exists at a time, so you always know exactly which piece is yours
 - **Your code gets checked**: when you're done, AI reads your code and runs the build/tests if it
   can. If something's wrong you get a hint, not a rewrite; the marker is removed only once it passes
 - **Teaching points**: one after each step passes its check, 2-3 when the whole task is done
   (what problem it solves, the key trade-off, where else it applies). No lecture every turn
-- **Opening protocol**: learning/migration tasks start with a concept map and a step overview
-  (each step marked as AI's or yours); nothing is edited until you confirm
-- **Pacing and checks**: one step per turn; each step ends with a single question to confirm you
-  understood. If you can't answer, it gets explained on the spot
+- **Opening protocol** (practice-first): a concept map and a step overview (each step marked as
+  AI's or yours) come first; nothing is edited until you confirm
+- **Pacing and checks**: practice-first moves one step per turn; each step (each feature in
+  project-first) ends with a single question to confirm you understood
 - **Exit any time**: say "back to normal mode" to stop practice mode
 
 ## How it works
 
-A typical brain-first session:
+**Project-first** ("build me a small expense tracker, I'm a bit rusty"):
 
-1. Learning/migration tasks start with the opening protocol: concept map + step overview, then wait for your confirmation
-2. AI implements step by step, doing routine parts itself; at key decision points (or operations you said you want to learn) it first writes a `TODO(human)` placeholder
-3. AI asks you to implement 2-10 lines using a three-part request: **Context / Your task / Hints**
-4. After asking, AI stays silent and waits; it doesn't do it for you or keep going
-5. When you're done, AI reads and (where possible) builds/tests your code; if there's a problem you get a hint to fix it yourself; once it passes, `TODO(human)` is removed
-6. Each step ends with one check question; a correct answer earns one teaching point, a wrong one gets a full explanation
-7. When all steps are done, AI summarizes 2-3 teaching points linking your code to broader patterns
+1. AI states the current mode and writes all the routine parts of the feature
+2. It picks 1-2 spots most worth writing by hand (preferring topics from your weak-spot log), and prepares a skeleton and a `TODO(human)` placeholder for your current level
+3. AI asks you to fill it in with a three-part request (**Context / Your task / Hints**), then waits silently
+4. When you're done, AI reads and (where possible) builds/tests your code; problems get graded hints; once it passes, `TODO(human)` is removed
+5. The feature ends with one check question (you can reply "skip"); a correct answer earns one teaching point
+
+**Practice-first** ("I want to learn how to migrate this project to MyBatis-Plus"):
+
+1. Opening protocol: concept map + step overview, then wait for your confirmation
+2. AI goes step by step, doing routine parts itself and leaving `TODO(human)` at key decisions and at operations you said you want to learn
+3. Each step ends with one check question; if you can't answer, it's explained and you don't move on yet
+4. When all steps are done, AI summarizes 2-3 teaching points linking your code to broader patterns
 
 Output uses plain CommonMark (headings, blockquotes, bold), so it renders the same in every
 agent with no per-tool customization.
@@ -83,17 +107,17 @@ agent with no per-tool customization.
 
 - Guided project migration: e.g. MyBatis → MyBatis-Plus, AI paves the road and you change the key parts
 - Interview prep: practice "AI off, write it by hand" rounds
-- Rebuilding hands-on skill after a long stretch of letting AI generate everything
+- Getting your hands back after too much vibe coding, while building your own projects
 - Learning a new framework: AI builds the skeleton, you write the core business logic
 
 ## Supported agents
 
-| Agent | Global directory |
-|---|---|
-| Claude Code | `~/.claude/skills/brain-first/` |
-| Kimi Code | `~/.kimi-code/skills/brain-first/` |
-| Codex | `~/.codex/skills/brain-first/` |
-| OpenCode | `~/.config/opencode/skills/brain-first/` (also reads `~/.claude/skills/`; no separate install needed if Claude Code is installed) |
+| Agent | Global directory | Invoke manually |
+|---|---|---|
+| **Codex** | `~/.codex/skills/brain-first/` | type `$brain-first`, or pick it via `/skills` |
+| Kimi Code | `~/.kimi-code/skills/brain-first/` | `/skill:brain-first` |
+| OpenCode | `~/.config/opencode/skills/brain-first/` (also reads `~/.claude/skills/`; no separate install needed if Claude Code is installed) | ask it to "use the brain-first skill" |
+| Claude Code | `~/.claude/skills/brain-first/` | `/brain-first` |
 
 > Install once per agent. Codex, Kimi Code and OpenCode also read the shared `~/.agents/skills/`
 > directory; putting a copy in several directories makes the skill load more than once.
@@ -103,9 +127,20 @@ Works with any agent that supports `SKILL.md` per the
 
 ## Triggering
 
-- **Automatic**: say things like "learning mode", "hands-on practice", "let me write it myself"
-  (Chinese: 学习模式 / 边写边学 / 自己动手写); the model loads the skill from its `description`
-- **Manual**: in a new session, type `/brain-first`
+- **Automatic**: say things like "learning mode", "hands-on practice", "let me write it myself",
+  "don't write it all for me", "I'm rusty" (Chinese: 学习模式 / 边写边学 / 自己动手写 / 手生了); the model loads the skill from its `description`
+- **Manual**: in a new session, load it as shown in the "Invoke manually" column above (`$brain-first` in Codex)
+
+### Keep it on
+
+To use it all the time in a project, add one line to `AGENTS.md` at the project root (read by
+Codex, Kimi Code and OpenCode; Claude Code uses `CLAUDE.md`):
+
+```markdown
+Use the brain-first skill (project-first mode) by default when writing code.
+```
+
+For Codex across all projects, put it in `~/.codex/AGENTS.md`.
 
 ## Installation
 
@@ -175,6 +210,17 @@ brain-first/
 ```bash
 python3 scripts/validate_skill.py && shellcheck install.sh
 ```
+
+## Credits and notes
+
+brain-first is based on Claude Code's built-in Learning output style: the `TODO(human)` placeholder
+and the Context / Your task / Guidance request come from there. brain-first turns it into an
+Agent Skill that works across agents, and adds the opening protocol, two modes, difficulty
+levels, graded hints, code checks, check questions and the weak-spot log.
+
+brain-first works in Claude Code too; keep the default output style there. **Don't enable the Learning
+or Explanatory output style at the same time**, or you'll get two sets of teaching points and
+hands-on requests.
 
 ## License
 

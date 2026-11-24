@@ -15,10 +15,11 @@ MODE="${1:-install}"
 # 每个 agent 一行："名称|agent 根目录|skill 目录"
 # 根目录存在即视为已安装该 agent；skills 子目录不存在会自动创建。
 # 每个 agent 只装一份，避免同一个 skill 被重复加载。
+# 注意：Claude Code 必须排在 OpenCode 之前（OpenCode 的去重判断依赖它）。
 AGENTS=(
-  "Claude Code|$HOME/.claude|$HOME/.claude/skills"
   "Codex|$HOME/.codex|$HOME/.codex/skills"
   "Kimi Code|$HOME/.kimi-code|$HOME/.kimi-code/skills"
+  "Claude Code|$HOME/.claude|$HOME/.claude/skills"
   "OpenCode|$HOME/.config/opencode|$HOME/.config/opencode/skills"
 )
 
